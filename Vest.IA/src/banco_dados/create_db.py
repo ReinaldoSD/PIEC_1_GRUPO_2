@@ -13,30 +13,35 @@ def criar_banco():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Tabela de Usuários (Mantida para compatibilidade, mesmo sem uso obrigatório)
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        senha TEXT NOT NULL
-    )
-    """)
+    # Tabela de USUÁRIOS
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            senha TEXT NOT NULL,
+            foto_url TEXT,
+            data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
 
     # Tabela de Roupas
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS roupas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
         nome TEXT NOT NULL,
         tipo TEXT,
         cor TEXT,
         ocasiao TEXT,
         clima_ideal TEXT,
-        vezes_usada INTEGER DEFAULT 0
+        vezes_usada INTEGER DEFAULT 0,
+        data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
     )
     """)
 
-    # Tabela de Fotos (Uma roupa pode ter várias fotos)
+    # Tabela de Fotos
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS fotos_roupas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
