@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vest.IA</title>
 
+    <link rel="icon" href="/static/logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
@@ -31,52 +31,72 @@
 
     <div class="flex min-h-screen">
 
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-[#140a28] text-white p-6 fixed h-full border-r border-white/10 shadow-2xl backdrop-blur-xl">
+        <aside class="w-64 bg-[#140a28] text-white p-6 fixed h-full border-r border-white/10 shadow-2xl backdrop-blur-xl flex flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-5 px-2">
+                    <img src="/static/logosemonome.png" alt="Vest.IA" class="w-100 h-100 object-contain">
+                </div>
+                
+                <nav class="space-y-2">
+                    <a href="/dashboard" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">🏠 Dashboard</a>
+                    <a href="/cadastrar" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">➕ Cadastrar Roupa</a>
+                    <a href="/minhas_roupas" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">👕 Minhas Roupas</a>
+                    <a href="/sugestoes" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">💡 Sugestões</a>
+                    <a href="/historico_page" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">📅 Histórico</a>
+                    <a href="/perfil" class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">👤 Meu Perfil</a>
+                </nav>
+            </div>
 
-            <div class="flex items-center gap-3 mb-10 px-2">
-    <img src="/static/logosemonome.png" alt="Vest.IA" class="w-10 h-10 object-contain">
-    
-    <h1 class="text-2xl font-bold text-white">
-        Vest.IA
-    </h1>
-</div>
-
-            <nav class="space-y-3">
-
-                <a href="/dashboard"
-                   class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">
-                    🏠 Dashboard
+            <div class="pt-4 border-t border-white/10">
+                <a href="/logout" class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white font-semibold transition border border-red-500/20 shadow-sm">
+                    🚪 Sair da Conta
                 </a>
-
-                <a href="/cadastrar"
-                   class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">
-                    ➕ Cadastrar
-                </a>
-
-                <a href="/roupas"
-                   class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">
-                    👕 Minhas Roupas
-                </a>
-
-                <a href="/historico_page"
-                   class="block py-3 px-4 rounded-xl hover:bg-blue-600 transition">
-                    📅 Histórico
-                </a>
-
-            </nav>
-
+            </div>
         </aside>
 
-        <!-- CONTEÚDO -->
-        <main class="ml-64 flex-1 p-8">
-
+        <main class="flex-1 ml-64 p-8 lg:p-12 overflow-y-auto">
             {% block content %}
             {% endblock %}
-
         </main>
 
     </div>
 
+    <script>
+        function mostrarToast(mensagem, tipo = 'sucesso') {
+            const toastAntigo = document.getElementById('meu-toast');
+            if (toastAntigo) toastAntigo.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'meu-toast';
+            
+            const corFundo = tipo === 'sucesso' ? 'bg-green-500' : 'bg-red-500';
+            const icone = tipo === 'sucesso' ? '✨' : '⚠️';
+
+            toast.className = `fixed top-5 right-5 md:top-10 md:right-10 ${corFundo} text-white px-6 py-4 rounded-2xl shadow-2xl transform transition-all duration-500 translate-x-20 opacity-0 z-50 flex items-center gap-3`;
+            toast.innerHTML = `<span class="text-2xl">${icone}</span> <span class="font-medium">${mensagem}</span>`;
+            
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-x-20', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-x-20', 'opacity-0');
+                setTimeout(() => toast.remove(), 500);
+            }, 3500);
+        }
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    setTimeout(() => {
+                        mostrarToast({{ message|tojson|safe }}, {{ category|tojson|safe }});
+                    }, 100); 
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </script>
 </body>
 </html>
+"""
+
+with open("layout.html", "w", encoding="utf-8") as f:
+    f.write(layout_code)
