@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="static/logo2.png" alt="Vest.IA Logo" width="180"/>
+<img src="src/static/logo2.png" alt="Vest.IA Logo" width="180"/>
 
 # Vest.IA — Seu Guarda-Roupa Digital
 
