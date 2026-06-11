@@ -1,1 +1,1 @@
-
+Está pasta é a responsável por armazenar o modelo de IA local, visto que contém os arquivos do modelo Fashion-CLIP que é baixado na primeira execução.
