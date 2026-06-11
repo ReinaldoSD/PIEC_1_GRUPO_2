@@ -161,7 +161,7 @@ function moverCarrossel(roupaId, direcao, totalFotos) {
     container.style.transform = `translateX(${deslocamento}%)`;
 }
 
-// Função para extrair tipos e cores e preencher os selects
+// NOVO: Função para extrair tipos e cores e preencher os selects
 function popularFiltrosDinamicos(roupas) {
     const selectTipo = document.getElementById('filtroTipo');
     const selectCor = document.getElementById('filtroCor');
@@ -222,7 +222,7 @@ function renderizarInterface(filtradas, todasAsRoupas) {
     }
 
     if(typeof renderizarMenosUsadas === 'function') {
-        renderizarMenosUsadas(todasAsRoupas);
+        renderizarMenosUsadas(todasAsRoupas); // Costuma fazer sentido mostrar o rank global nas menos usadas
     }
 
     // PREPARA O CONTAINER PARA RENDERIZAR OS CARDS
@@ -309,6 +309,8 @@ function renderizarInterface(filtradas, todasAsRoupas) {
 function filtrarLocalmente() {
     // 2. LÓGICA DE FILTRAGEM (Busca por nome, tipo, cor)
     const nome = normalizar(document.getElementById('filtroNome')?.value || '');
+    // Nota: para os selects de Tipo e Cor, evitamos usar o normalizar porque o valor gerado nos options
+    // bate exatamente com a string salva no banco, preservando maiúsculas e minúsculas.
     const tipo = document.getElementById('filtroTipo')?.value || '';
     const cor = document.getElementById('filtroCor')?.value || '';
 
@@ -333,8 +335,19 @@ function usarRoupa(id) {
         carregarRoupas();
     });
 }
-function excluirRoupa(id) {
-    if (!confirm("Deseja realmente excluir esta peça?")) return;
+// Substitua a função excluirRoupa antiga por esta:
+async function excluirRoupa(id) {
+    // Chama o modal bonito. O 'true' no final faz o botão e ícone ficarem VERMELHOS (ação perigosa)
+    const certeza = await perguntar(
+        "Excluir Peça", 
+        "Deseja realmente excluir esta peça do seu guarda-roupa? Essa ação não pode ser desfeita.", 
+        true
+    );
+    
+    // Se o usuário clicou em "Cancelar", a função para aqui e não exclui nada
+    if (!certeza) return; 
+
+    // Se confirmou, faz a requisição para excluir
     fetch('/excluir/' + id).then(() => {
         mostrarToast("Roupa removida do guarda-roupa.", "sucesso");
         carregarRoupas();
@@ -347,7 +360,7 @@ function abrirModalEdicao(roupa) {
     document.getElementById('edit_tipo').value = roupa.tipo;
     document.getElementById('edit_cor').value = roupa.cor;
     document.getElementById('edit_ocasiao').value = roupa.ocasiao;
-    document.getElementById('edit_clima').value = roupa.clima_ideal;
+    document.getElementById('edit_clima').value = roupa.clima_ideal; // Nota: no banco está salvo como clima_ideal
     
     document.getElementById('modal-edicao').classList.remove('hidden');
 }

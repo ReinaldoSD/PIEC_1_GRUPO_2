@@ -146,7 +146,7 @@ async function carregarSugestoesDiarias() {
                 cardRecomendado.classList.add('bg-white', 'text-slate-900', 'shadow-2xl', 'scale-105');
                 cardRecomendado.querySelector('.badge-recomendado').classList.remove('hidden');
                 
-                // Ajusta o texto da caixa branca para ficar visível
+                // Ajusta o texto da caixa branca para ficar visível (pois o fundo mudou)
                 cardRecomendado.querySelectorAll('p').forEach(p => p.classList.add('text-slate-500'));
                 cardRecomendado.querySelectorAll('h3').forEach(h => h.classList.add('text-slate-800'));
             }
